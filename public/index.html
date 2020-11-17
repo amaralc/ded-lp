@@ -45,14 +45,36 @@
       /** Cria uma cena */
       const scene = new THREE.Scene();
 
+      /** Define uma fonte de luz direcional */
+      {
+        /** Define cor da luz */
+        const color = 0xFFFFFF;
+
+        /** Define intensidade luminosa */
+        const intensity = 1;
+
+        /** 
+         * Instancia uma luz direcional
+         * Posicao padrao: 0, 0, 0
+         * Target padrao: 0, 0, 0
+         */
+        const light = new THREE.DirectionalLight(color, intensity);
+
+        /** Define posicao da luz */
+        light.position.set(-1, 2, 4);
+
+        /** Adiciona luz à cena */
+        scene.add(light);
+      }
+
       /** Define uma geometria do tipo "box" */
       const boxWidth = 1;
       const boxHeight = 1;
       const boxDepth = 1;
       const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
 
-      /** Define cor (material) utilizando CSS style 6 digit hex color values */
-      const material = new THREE.MeshBasicMaterial({color: 0x44aa88});  // greenish blue
+      /** Define material que reage à luz */
+      const material = new THREE.MeshPhongMaterial({color: 0x44aa88})      
 
       /** 
        * Define uma malha, representada por geometria e material
