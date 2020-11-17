@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  
+</head>
+<body>
+  <canvas id="c"></canvas>
+  <script type="module">
+    /** Importa build do three.js*/
+    import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r122/build/three.module.js';
+
+    /** Define função main*/
+    function main() {
+
+      /** Busca canvas na DOM */
+      const canvas = document.querySelector('#c');
+
+      /** Cria renderizador WebGL no canvas */
+      const renderer = new THREE.WebGLRenderer({canvas});
+
+      /** Define field of view (fov) em graus, na direcao vertical */
+      const fov = 75;
+
+      /** Define aspect ration (width/height) com padrao 300x150 pixels (300/150 = 2) */
+      const aspect = 2;
+
+      /** Plano mais próximo da câmera que será renderizado [units] */
+      const near = 0.1;
+
+      /** Plano mais afastado da câmera que será renderizado [units] */
+      const far = 5;
+
+      /** Define perspective camera frustrum (tronco de piramide) */
+      const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+      /** 
+       * Define posicao da camera 
+       * Por default, a camera olha para a direção -Z, com +X para direita e +Y para cima
+       */
+      camera.position.z = 2;
+
+      /** Cria uma cena */
+      const scene = new THREE.Scene();
+
+      /** Define uma fonte de luz direcional */
+      {
+        /** Define cor da luz */
+        const color = 0xFFFFFF;
+
+        /** Define intensidade luminosa */
+        const intensity = 1;
+
+        /** 
+         * Instancia uma luz direcional
+         * Posicao padrao: 0, 0, 0
+         * Target padrao: 0, 0, 0
+         */
+        const light = new THREE.DirectionalLight(color, intensity);
+
+        /** Define posicao da luz */
+        light.position.set(-1, 2, 4);
+
+        /** Adiciona luz à cena */
+        scene.add(light);
+      }
+
+      /** Define uma geometria do tipo "box" */
+      const boxWidth = 1;
+      const boxHeight = 1;
+      const boxDepth = 1;
+      const geometry = new THREE.BoxGeometry(boxWidth, boxHeight, boxDepth);
+
+      /** Cria funcao que instancia geometrias com cores e posicao x determinadas */
+      function makeInstance(geometry, color, x) {
+
+        //** Define material que reage à luz */
+        const material = new THREE.MeshPhongMaterial({color})  
+
+        /** 
+         * Define uma malha, representada por geometria e material
+         * Malhas sao compostas por:
+         * 1. Geometria
+         * 2. Material
+         * 3. Posicao, Orientacao e Escala relativo ao "parent element", no caso a cena
+         * ... No exemplo, o ponto 3 não ficou claro.
+         */
+        const cube = new THREE.Mesh(geometry, material);
+
+        /** Adiciona a malha à cena */
+        scene.add(cube);
+
+        /** Define posicao x do cubo */
+        cube.position.x = x;
+
+        /** Retorna cubo */
+        return cube;
+      }
+
+      /** Cria array de cubos */
+      const cubes = [
+        makeInstance(geometry, 0x44aa88,  0),
+        makeInstance(geometry, 0x8844aa, -2),
+        makeInstance(geometry, 0xaa8844,  2),
+      ];
+
+      /** Cria função para renderizar frame */
+      function render(time) {
+        /** Converte tempo de milisegundos [ms] para segundos [s] */
+        time *= 0.001;  
+      
+        /** Para cada cubo da lista com determinado indice (ndx) */
+        cubes.forEach((cube, ndx) => {
+          /** Calcula velocidade de rotacao */
+          const speed = 1 + ndx * 0.1;
+
+          /** Define rotacao em radianos */
+          const rot = time * speed;
+
+          /** Define rotacao em x e y [rad] */
+          cube.rotation.x = rot; //rad
+          cube.rotation.y = rot; //rad
+        });        
+      
+        /** Roda o renderizador, passando cena e camera */
+        renderer.render(scene, camera);
+      
+        /** Chama funcao render novamente, continuando o loop */
+        requestAnimationFrame(render);
+      }
+
+      /** Diz ao browser que deseja animar algo e passa funcao render como parametro */
+      requestAnimationFrame(render);
+    }
+
+    /** Chama função main */
+    main();
+
+  </script>
+  
+</body>
+</html>
