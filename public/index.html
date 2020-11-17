@@ -67,8 +67,24 @@
       /** Adiciona a malha à cena */
       scene.add(cube);
 
-      /** Renderiza o renderizador, passando cena e camera */
-      renderer.render(scene, camera);
+      /** Cria função para renderizar frame */
+      function render(time) {
+        /** Converte tempo de milisegundos [ms] para segundos [s] */
+        time *= 0.001;  
+      
+        /** Define rotacao em x e y [rad] */
+        cube.rotation.x = time; //rad
+        cube.rotation.y = time; //rad
+      
+        /** Roda o renderizador, passando cena e camera */
+        renderer.render(scene, camera);
+      
+        /** Chama funcao render novamente, continuando o loop */
+        requestAnimationFrame(render);
+      }
+
+      /** Diz ao browser que deseja animar algo e passa funcao render como parametro */
+      requestAnimationFrame(render);
     }
 
     /** Chama função main */
