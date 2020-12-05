@@ -1,17 +1,22 @@
-import React, { useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Canvas, useFrame } from 'react-three-fiber'
-import { makeStyles, createStyles } from '@material-ui/core/styles';
+import { makeStyles, createStyles } from '@material-ui/core/styles'
+import { NextPage } from 'next'
 
-const useStyles = makeStyles(() =>
-  createStyles({
-    root: {
-      width: '100%',
-      height: '100vh'
-    },
-  }),
-);
+const styles = createStyles({
+  root: {
+    width: '100%',
+    height: 500
+  }
+})
 
-function Box(props) {
+const useStyles = makeStyles(styles)
+
+type Props = {
+  position: number[]
+}
+
+const Box: NextPage<Props> = (props: Props) => {
   // This reference will give us direct access to the mesh
   const mesh = useRef()
 
@@ -29,27 +34,29 @@ function Box(props) {
       {...props}
       ref={mesh}
       scale={active ? [1.5, 1.5, 1.5] : [1, 1, 1]}
-      onClick={(event) => setActive(!active)}
-      onPointerOver={(event) => setHover(true)}
-      onPointerOut={(event) => setHover(false)}>
+      onClick={event => setActive(!active)}
+      onPointerOver={event => setHover(true)}
+      onPointerOut={event => setHover(false)}
+    >
       <boxBufferGeometry args={[1, 1, 1]} />
       <meshStandardMaterial color={hovered ? 'hotpink' : 'orange'} />
     </mesh>
   )
 }
 
-export default function Demo(){
-  const classes = useStyles();
+const Cubes: NextPage = () => {
+  const classes = useStyles()
 
-  return(
+  return (
     <div className={classes.root}>
-      <Canvas >
+      <Canvas>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
         <Box position={[-1.2, 0, 0]} />
         <Box position={[1.2, 0, 0]} />
-    </Canvas>
-   </div>
+      </Canvas>
+    </div>
   )
 }
 
+export default Cubes
